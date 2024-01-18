@@ -1,0 +1,122 @@
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+// Variables that hold the final results, integer data type for simplicity
+int avgNum;
+int minNum;
+int maxNum;
+
+// Functions' declaration. Definition is at the bottom
+void *avgfunc(void *param);
+void *minfunc(void *param);
+void *maxfunc(void *param);
+
+int main(int argc, char* argv[])
+{
+  /* Create thread IDs */
+  pthread_t AvgThread, MinThread, MaxThread;
+  //The variables avgThread, minThread, and maxThread are "pthread t" types that have been declared in this code.
+
+  /* Create thread attributes */
+  pthread_attr_t attr;
+  //pthread attr is a data structure that gives the properties of a new thread created with the pthread create() function.
+
+  /* Initialize thread attributes */
+  pthread_attr_init(&attr);
+  //This code initialises a thread attribute object, "attr," of type
+
+  /* Create threads */
+ 
+  pthread_create(&AvgThread, &attr, avgfunc, (void*)argv);
+  pthread_create(&MinThread, &attr, minfunc, (void*)argv);
+  pthread_create(&MaxThread, &attr, maxfunc, (void*)argv);
+  
+ //It starts three threads, one for each function avgfunc, minfunc, and maxfunc, passing the same argument, void* argv, which is the program's input parameters. The first thread runs a function called avgfunc. The second thread runs a function called minfunc.
+  
+  /* Wait for threads to exit */
+//pthread join() waits for a thread to finish before continuing. It needs two points of view:
+//avgThread, minThread, and maxThread are the IDs of the threads to wait for. 
+ //The second argument is a variable that will hold the thread's return value. We set it to NULL because thread return values don't matter to us.
+//The second argument is a variable that will hold the thread's return value. We set it to NULL because thread return values don't matter to us.
+  pthread_join(AvgThread, NULL);
+  pthread_join(MinThread, NULL);
+  pthread_join(MaxThread, NULL);
+  //This code waits for the three threads to finish using pthread join. avgThread, minThread, and maxThread are executed in order.
+
+  printf("%d %d %d", avgNum, minNum, maxNum);
+  //The code only prints out avgNum, minNum, and maxNum when threads are done. 
+}
+
+void *avgfunc(void *param)
+{
+    // The following two lines help you to access the arguments (list of numbers) passed to the program
+    char** args = (char**) param;   // args is a pointer to array of pointers to main func arguments argv
+    args++;                        // increment the pointer to point to the first number passed
+
+    //Use atoi(*args) to get a number from the args array.
+    // Use atoi(*args) to get a number from the args array. *args++
+    int sum = 0;
+    //It says "sum" and "count" and puts an initial next to them. "sum" keeps track of the total amount of the list, and "count" keeps track of its number. 0
+    int count = 0;
+    while(*args) {
+       //Then, a while loop goes through all of the program's settings. If "*args" is not null, the while loop keeps going.
+        int num = atoi(*args);
+      //The string parameter is turned into an integer by the atoi() function, which is used by the while loop. The changed integer is stored in the variable.
+        sum += num;
+      //The code then moves "args" to the next argument in the list.
+        count++;
+        *args++;
+      //"num" is added to "sum," and "count" goes up by 1. This adds up all the numbers on the list
+    }
+    avgNum = sum / count;
+  //The code divides "sum" by "count" after the while loop and puts the result in "avgNum."
+}
+
+void *minfunc(void *param)
+{
+    // The following two lines help you to access the arguments (list of numbers) passed to the program
+    char** args = (char**) param;   // args is a pointer to array of pointers to main func arguments argv
+    args++;                        // increment the pointer to point to the first number passed
+
+    // Use atoi(*args) to get a number from the args array.
+    // Move the pointer to the next number: *args++
+    int min = atoi(*args);
+  //After using atoi() to turn the first input into an integer, it creates an integer variable called "min" and gives it the value.
+    while(*args) {
+       //Then, a while loop goes through all of the program's settings. If "*args" is not null, the while loop keeps going.
+        int num = atoi(*args);
+      //The string parameter is turned into an integer by the atoi() function, which is used by the while loop. The changed integer is stored in the variable.
+        if(num < min) min = num;
+       //If "num" is less than "min," the code gives "num" to "min."
+        *args++;
+      //The code then moves "args" to the next argument in the list.
+    }
+    minNum = min;
+  //After the while loop, "min" is given to "minNum.
+}
+
+void *maxfunc(void *param)
+{
+    // The following two lines help you to access the arguments (list of numbers) passed to the program
+    char** args = (char**) param;   // args is a pointer to array of pointers to main func arguments argv
+    args++;                        // increment the pointer to point to the first number passed
+
+    // Use atoi(*args) to get a number from args.
+    // to increment the pointer topoint to the next number: *args++
+    
+    /* Write the code to calculate the maximum value and store it in maxNum variable */
+    int max = atoi(*args);
+  // After using the atoi() method to change the first parameter into an integer, it creates an integer variable called "max" and gives it the value.
+while(*args) {
+  //Then, a while loop goes through all of the program's settings. If "*args" is not null, the while loop keeps going.
+int num = atoi(*args);
+  //The string parameter is turned into an integer by the atoi() function, which is used by the while loop. The changed integer is stored in the variable.
+if(num > max) max = num;
+  //If "num" is bigger than "max," the code moves "num" to "max."
+*args++;
+  //The code then moves "args" to the next argument in the list.
+}
+maxNum = max;
+//After the while loop, "max" is given to "maxNum."
+}
